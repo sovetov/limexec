@@ -77,9 +77,14 @@
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="checks.h" />
+    <ClInclude Include="custom_job_object_msgs.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="dispatcher.h" />
     <ClInclude Include="output.h" />
-    <ClInclude Include="memory_and_time.h" />
+    <ClInclude Include="stats.h" />
+    <ClInclude Include="setup.h" />
+    <ClInclude Include="watcher.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

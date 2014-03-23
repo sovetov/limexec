@@ -1,42 +1,69 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#define WIN32_LEAN_AND_MEAN
+#define NOCOMM
+
 #include <stdio.h>
 #include <tchar.h>
 #include <Windows.h>
 #include <strsafe.h>
 
-void ErrorHandler(LPTSTR lpszFunction)
+void MakeErrorMessage(
+	__in LPCTSTR lpzsFormat,
+	__in LPCTSTR lpszFunction,
+	__in DWORD dwErrorCode,
+	__out LPTSTR *lpDisplayBuf,
+	...)
 {
-	// Retrieve the system error message for the last-error code.
-
 	LPVOID lpMsgBuf;
-	LPVOID lpDisplayBuf;
-	DWORD dw = GetLastError();
+	va_list Args;
+
+	va_start(Args, lpDisplayBuf);
 
 	FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM |
 		FORMAT_MESSAGE_IGNORE_INSERTS,
 		NULL,
-		dw,
+		dwErrorCode,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR) &lpMsgBuf,
-		0, NULL );
+		0,
+		&Args);
 
-	// Display the error message.
-
-	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+	*lpDisplayBuf = (LPTSTR)LocalAlloc(
+		LMEM_ZEROINIT,
 		(lstrlen((LPCTSTR) lpMsgBuf) + lstrlen((LPCTSTR) lpszFunction) + 40) * sizeof(TCHAR));
-	StringCchPrintf((LPTSTR)lpDisplayBuf,
-		LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-		TEXT("%s failed with error %d: %s"),
-		lpszFunction, dw, lpMsgBuf);
-	MessageBox(NULL, (LPCTSTR) lpDisplayBuf, TEXT("Error"), MB_OK);
 
-	// Free error-handling buffer allocations.
+	StringCchPrintf(*lpDisplayBuf,
+		LocalSize(*lpDisplayBuf) / sizeof(TCHAR),
+		TEXT("%s failed with error %d: %s"),
+		lpszFunction, dwErrorCode, lpMsgBuf);
 
 	LocalFree(lpMsgBuf);
+
+	va_end(Args);
+}
+
+void ErrorHandler(LPCTSTR lpszFunction)
+{
+	LPVOID lpDisplayBuf;
+	DWORD dw = GetLastError();
+
+	MakeErrorMessage(
+		TEXT("%s failed with error %d: %s"),
+		lpszFunction,
+		dw,
+		(LPTSTR *) &lpDisplayBuf);
+
+	MessageBox(
+		NULL,
+		(LPCTSTR) lpDisplayBuf,
+		TEXT("Error"),
+		MB_OK);
+
+	// Free error-handling buffer allocations.
 	LocalFree(lpDisplayBuf);
 }
 
@@ -46,16 +73,7 @@ void TrueOrExit(BOOL call)
 
 	if(!(call))
 	{
-		if(TRUE)
-			ErrorHandler(TEXT("Fucntion"));
-		else
-		{
-			DWORD lastError = GetLastError();
-			_TCHAR output[500];
-			_stprintf_s(output, _countof(output), message, lastError);
-			MessageBox(NULL, output, _T("Fail"), MB_OK);
-		}
-
+		ErrorHandler(TEXT("Fucntion"));
 		ExitProcess(1);
 	}
 }

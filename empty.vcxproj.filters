@@ -6,6 +6,11 @@
   <ItemGroup>
     <ClInclude Include="debug.h" />
     <ClInclude Include="output.h" />
-    <ClInclude Include="memory_and_time.h" />
+    <ClInclude Include="setup.h" />
+    <ClInclude Include="dispatcher.h" />
+    <ClInclude Include="watcher.h" />
+    <ClInclude Include="stats.h" />
+    <ClInclude Include="checks.h" />
+    <ClInclude Include="custom_job_object_msgs.h" />
   </ItemGroup>
 </Project>

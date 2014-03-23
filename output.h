@@ -1,6 +1,9 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
+#define WIN32_LEAN_AND_MEAN
+#define NOCOMM
+
 #include <stdio.h>
 #include <tchar.h>
 #include <Windows.h>
@@ -10,7 +13,7 @@
 
 #define BUF_SIZE 255
 
-BOOL Output(__in __format_string TCHAR *msg, ...)
+BOOL Output(__in __format_string LPCTSTR msg, ...)
 {
 	HANDLE hStdout;
 	TCHAR msgBuf[BUF_SIZE];
