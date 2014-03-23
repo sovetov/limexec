@@ -1,8 +1,7 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#define WIN32_LEAN_AND_MEAN
-#define NOCOMM
+#include "common_compile_defines.h"
 
 #include <stdio.h>
 #include <tchar.h>

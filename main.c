@@ -1,6 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
-#define NOCOMM
-#define WINVER 0x0500
+#include "common_compile_defines.h"
 
 #include <tchar.h>
 #include <assert.h>
@@ -37,6 +35,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
 	hJob = HandleOrExit(CreateJobObject(NULL, NULL));
 	// MySetBreakawayLimit(hJob);
+	MySetBasicUIRestrictions(hJob);
 
 	MySetTimeLimit(hJob, dwTimeLimitMilliseconds);
 	MySetMemoryLimit(hJob, MemoryLimitBytes);

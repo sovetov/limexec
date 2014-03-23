@@ -1,8 +1,7 @@
 #ifndef SETUP_H
 #define SETUP_H
 
-#define WIN32_LEAN_AND_MEAN
-#define NOCOMM
+#include "common_compile_defines.h"
 
 #include <Windows.h>
 
@@ -108,6 +107,26 @@ void MySetEndOfJobTimeInformation(HANDLE hJob)
 		JobObjectEndOfJobTimeInformation,
 		&endOfJobTimeInformation,
 		sizeof(endOfJobTimeInformation)));
+}
+
+void MySetBasicUIRestrictions(HANDLE hJob)
+{
+	JOBOBJECT_BASIC_UI_RESTRICTIONS BasicUIRestrictions;
+
+	ZeroMemory(
+		&BasicUIRestrictions,
+		sizeof(BasicUIRestrictions));
+	QueryInformationJobObject(
+		hJob,
+		JobObjectBasicUIRestrictions,
+		&BasicUIRestrictions,
+		sizeof(BasicUIRestrictions), NULL);
+	BasicUIRestrictions.UIRestrictionsClass = JOB_OBJECT_UILIMIT_ALL;
+	TrueOrExit(SetInformationJobObject(
+		hJob,
+		JobObjectBasicUIRestrictions,
+		&BasicUIRestrictions,
+		sizeof(BasicUIRestrictions)));
 }
 
 void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)

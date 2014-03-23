@@ -1,8 +1,7 @@
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
 
-#define WIN32_LEAN_AND_MEAN
-#define NOCOMM
+#include "common_compile_defines.h"
 
 #include <Windows.h>
 #include "debug.h"
