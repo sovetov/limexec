@@ -13,5 +13,6 @@
     <ClInclude Include="checks.h" />
     <ClInclude Include="custom_job_object_msgs.h" />
     <ClInclude Include="common_compile_defines.h" />
+    <ClInclude Include="create_process.h" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,7 @@
 #include "setup.h"
 #include "dispatcher.h"
 #include "stats.h"
+#include "create_process.h"
 
 #define UPDATE_INTERVAL 100
 

@@ -129,34 +129,4 @@ void MySetBasicUIRestrictions(HANDLE hJob)
 		sizeof(BasicUIRestrictions)));
 }
 
-void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
-{
-	STARTUPINFO startUpInfo;
-	UINT uErrorMode;
-
-	ZeroMemory(&startUpInfo, sizeof(startUpInfo));
-	startUpInfo.cb = sizeof(startUpInfo);
-	ZeroMemory(pProcessInformation, sizeof(pProcessInformation));
-
-	// Only way to change error mode of child process that I found
-	// is to change parent's one, let child ingerit it
-	// and restore parent's error mode back.
-	uErrorMode = SetErrorMode(
-		SetErrorMode(0) | SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
-
-	TrueOrExit(CreateProcess(
-		NULL,
-		cmd,
-		NULL,
-		NULL,
-		FALSE,
-		CREATE_BREAKAWAY_FROM_JOB | CREATE_NEW_CONSOLE,
-		NULL,
-		NULL,
-		&startUpInfo,
-		pProcessInformation));
-
-	SetErrorMode(uErrorMode);
-}
-
 #endif // SETUP_H
