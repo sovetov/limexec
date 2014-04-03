@@ -31,7 +31,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
 	if(argc != 4)
 	{
-		Output(TEXT("Usage %s <command_line> <time_limit_ms> <memory_limit_bytes>"));
+		Output(TEXT("Usage %s <command_line> <time_limit_ms> <memory_limit_bytes>"), argv[0]);
 		ExitProcess(1);
 	}
 
