@@ -99,7 +99,12 @@ int _tmain(int argc, _TCHAR *argv[])
 		&Verdict);
 	GetStats(hJob, ProcessInformation.hProcess, &Stats);
 
-	Output(TEXT("%d %d %d %s\n"), Verdict.verdictCode, Stats.dwTimeMilliseconds, Stats.MemoryBytes, Verdict.exitCodeMessage);
+	Output(
+		TEXT("%d %d %d %s\n"),
+		Verdict.verdictCode,
+		Stats.dwTimeMilliseconds,
+		Stats.MemoryBytes,
+		Verdict.exitCodeMessage);
 
 	// WaitForSingleObject(ProcessInformation.hProcess, INFINITE);
 	CloseHandle(ProcessInformation.hProcess);
