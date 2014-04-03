@@ -29,7 +29,12 @@ int _tmain(int argc, _TCHAR *argv[])
 	VERDICT Verdict;
 	STATS Stats;
 
-	assert(argc >= 4);
+	if(argc != 4)
+	{
+		Output(TEXT("Usage %s <command_line> <time_limit_ms> <memory_limit_bytes>"));
+		ExitProcess(1);
+	}
+
 	CommandLine = argv[1];
 	dwTimeLimitMilliseconds = _ttoi(argv[2]);
 	MemoryLimitBytes = _ttoi(argv[3]);
@@ -43,7 +48,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
 	hCompletionPort = CreateIoCompletionPort(
 		INVALID_HANDLE_VALUE,
-		NULL,
+		INVALID_HANDLE_VALUE,
 		JOB_OBJECT_MSG_END_OF_PROCESS_TIME,
 		1);
 
@@ -55,6 +60,13 @@ int _tmain(int argc, _TCHAR *argv[])
 		hJob,
 		ProcessInformation.hProcess));
 
+	// Here we immediately get message on completion port.
+	// Note that wait time is 0.
+	// This is a mew process message.
+	// Also, we perform extra assert.
+	// Number of bytes indicates which job-related event occurred.
+	// For more information, see the following table of message identifiers.
+	// See http://msdn.microsoft.com/en-us/library/windows/desktop/ms684141(v=vs.85).aspx
 	GetQueuedCompletionStatus(
 		hCompletionPort,
 		&dwNumberOfBytes,
@@ -77,6 +89,10 @@ int _tmain(int argc, _TCHAR *argv[])
 		0,
 		&dwWatcherThreadId));
 
+	// This function waits for process for a long time until it ends.
+	// Number of bytes indicates which job-related event occurred.
+	// For more information, see the following table of message identifiers.
+	// See http://msdn.microsoft.com/en-us/library/windows/desktop/ms684141(v=vs.85).aspx
 	GetQueuedCompletionStatus(
 		hCompletionPort,
 		&dwNumberOfBytes,
