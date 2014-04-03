@@ -48,7 +48,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
 	hCompletionPort = CreateIoCompletionPort(
 		INVALID_HANDLE_VALUE,
-		INVALID_HANDLE_VALUE,
+		NULL,
 		JOB_OBJECT_MSG_END_OF_PROCESS_TIME,
 		1);
 
