@@ -17,6 +17,7 @@ typedef int VERDICT_CODE;
 typedef struct _VERDICT {
 	VERDICT_CODE verdictCode;
 	LPCTSTR exitCodeMessage;
+	DWORD exitCode;
 } VERDICT, *PVERDICT;
 
 #define CUSTOM_STATUS_SUCCESS 0
@@ -132,6 +133,7 @@ void DispatchQueuedCompletionStatusToVerdict(
 
 	TrueOrExit(GetExitCodeProcess(hProcess, &uExitCode));
 	pVerdict->verdictCode = GetVerdictCode(dwNumberOfBytesAsMessageIdentifier, uExitCode);
+	pVerdict->exitCode = uExitCode;
 	pVerdict->exitCodeMessage = GetExitCodeMessage(uExitCode);
 }
 

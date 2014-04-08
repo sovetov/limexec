@@ -83,10 +83,13 @@
     <ClInclude Include="custom_job_object_msgs.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="dispatcher.h" />
-    <ClInclude Include="output.h" />
     <ClInclude Include="stats.h" />
     <ClInclude Include="setup.h" />
     <ClInclude Include="watcher.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="stderr.txt" />
+    <None Include="stdout.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

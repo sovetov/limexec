@@ -8,7 +8,6 @@
 #include <Windows.h>
 #include <strsafe.h>
 #include "debug.h"
-#include "output.h"
 
 #define TICKS_PER_MILLISECOND 10000
 

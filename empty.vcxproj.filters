@@ -5,7 +5,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug.h" />
-    <ClInclude Include="output.h" />
     <ClInclude Include="setup.h" />
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="watcher.h" />
@@ -14,5 +13,9 @@
     <ClInclude Include="custom_job_object_msgs.h" />
     <ClInclude Include="common_compile_defines.h" />
     <ClInclude Include="create_process.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="stderr.txt" />
+    <None Include="stdout.txt" />
   </ItemGroup>
 </Project>

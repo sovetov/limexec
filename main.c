@@ -31,7 +31,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
 	if(argc != 4)
 	{
-		Output(TEXT("Usage %s <command_line> <time_limit_ms> <memory_limit_bytes>"), argv[0]);
+		_tprintf(TEXT("Usage \"%s\" <command_line> <time_limit_ms> <memory_limit_bytes>"), argv[0]);
 		ExitProcess(1);
 	}
 
@@ -115,9 +115,11 @@ int _tmain(int argc, _TCHAR *argv[])
 		&Verdict);
 	GetStats(hJob, ProcessInformation.hProcess, &Stats);
 
-	Output(
-		TEXT("%d %d %d %s\n"),
+	_tprintf(
+		TEXT("%u %u %u %u %u %s\n"),
 		Verdict.verdictCode,
+		dwNumberOfBytes,
+		Verdict.exitCode,
 		Stats.dwTimeMilliseconds,
 		Stats.MemoryBytes,
 		Verdict.exitCodeMessage);
