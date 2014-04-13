@@ -32,7 +32,7 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 	ZeroMemory(pProcessInformation, sizeof(pProcessInformation));
 
 	// Only way to change error mode of child process that I found
-	// is to change parent's one, let child ingerit it
+	// is to change parent's one, let child inherit it
 	// and restore parent's error mode back.
 	uErrorMode = SetErrorMode(
 		SetErrorMode(0) | SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);

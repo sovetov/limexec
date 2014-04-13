@@ -88,6 +88,9 @@
     <ClInclude Include="watcher.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="input.txt" />
+    <None Include="log.txt" />
+    <None Include="output.txt" />
     <None Include="stderr.txt" />
     <None Include="stdout.txt" />
   </ItemGroup>

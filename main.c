@@ -116,7 +116,7 @@ int _tmain(int argc, _TCHAR *argv[])
 	GetStats(hJob, ProcessInformation.hProcess, &Stats);
 
 	_tprintf(
-		TEXT("%u %u %u %u %u %s\n"),
+		TEXT("%u %u %u %u %u %s"),
 		Verdict.verdictCode,
 		dwNumberOfBytes,
 		Verdict.exitCode,

@@ -129,7 +129,7 @@ void DispatchQueuedCompletionStatusToVerdict(
 	HANDLE hProcess,
 	PVERDICT pVerdict)
 {
-	UINT uExitCode;
+	DWORD uExitCode;
 
 	TrueOrExit(GetExitCodeProcess(hProcess, &uExitCode));
 	pVerdict->verdictCode = GetVerdictCode(dwNumberOfBytesAsMessageIdentifier, uExitCode);

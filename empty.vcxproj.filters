@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.c" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="debug.h" />
     <ClInclude Include="setup.h" />
     <ClInclude Include="dispatcher.h" />
@@ -15,7 +12,28 @@
     <ClInclude Include="create_process.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="stderr.txt" />
-    <None Include="stdout.txt" />
+    <None Include="input.txt">
+      <Filter>Text</Filter>
+    </None>
+    <None Include="log.txt">
+      <Filter>Text</Filter>
+    </None>
+    <None Include="output.txt">
+      <Filter>Text</Filter>
+    </None>
+    <None Include="stderr.txt">
+      <Filter>Text</Filter>
+    </None>
+    <None Include="stdout.txt">
+      <Filter>Text</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Text">
+      <UniqueIdentifier>{5b362f8e-3171-466a-b033-5d8ba643365e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
