@@ -29,7 +29,11 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 
 	ZeroMemory(&startUpInfo, sizeof(startUpInfo));
 	startUpInfo.cb = sizeof(startUpInfo);
-	ZeroMemory(pProcessInformation, sizeof(pProcessInformation));
+	startUpInfo.dwFlags = STARTF_USESTDHANDLES;
+	startUpInfo.hStdInput = INVALID_HANDLE_VALUE;
+	startUpInfo.hStdOutput = INVALID_HANDLE_VALUE;
+	startUpInfo.hStdError = INVALID_HANDLE_VALUE;
+	ZeroMemory(pProcessInformation, sizeof(*pProcessInformation));
 
 	// Only way to change error mode of child process that I found
 	// is to change parent's one, let child inherit it
@@ -44,7 +48,7 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 		NULL,
 		NULL,
 		FALSE,
-		CREATE_BREAKAWAY_FROM_JOB | CREATE_NEW_CONSOLE,
+		CREATE_BREAKAWAY_FROM_JOB,
 		NULL,
 		NULL,
 		&startUpInfo,
