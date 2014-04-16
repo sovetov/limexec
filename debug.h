@@ -72,7 +72,7 @@ void TrueOrExit(BOOL call)
 
 	if(!(call))
 	{
-		ErrorHandler(TEXT("Fucntion"));
+		ErrorHandler(TEXT("Executor"));
 		ExitProcess(1);
 	}
 }

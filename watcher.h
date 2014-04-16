@@ -10,16 +10,15 @@
 typedef struct {
 	HANDLE hJob;
 	HANDLE hProcess;
-	DWORD dwUpdateIntervalMilliseconds, dwTimeLimitMilliseconds;
+	DWORD dwUpdateIntervalMilliseconds, dwTimeLimitMilliseconds, dwIdlenessLimitMilliseconds;
 	SIZE_T MemoryLimitBytes;
 	HANDLE hCompletionPort;
 } WATCHER_DATA, *PWATCHER_DATA;
 
 DWORD WINAPI WatcherThread(LPVOID lpParam)
 {
-	PWATCHER_DATA pWatcherThreadData;
-
-	pWatcherThreadData = (PWATCHER_DATA)lpParam;
+	PWATCHER_DATA pWatcherThreadData = (PWATCHER_DATA)lpParam;
+	DWORD dwIterationsLmit = pWatcherThreadData->dwIdlenessLimitMilliseconds / pWatcherThreadData->dwUpdateIntervalMilliseconds;
 
 	// Print the parameter values using thread-safe functions.
 	while(TRUE)
@@ -46,6 +45,20 @@ DWORD WINAPI WatcherThread(LPVOID lpParam)
 				0,
 				NULL);
 			break;
+		}
+
+		if(dwIterationsLmit == 0)
+		{
+			PostQueuedCompletionStatus(
+				pWatcherThreadData->hCompletionPort,
+				CUSTOM_JOB_OBJECT_MSG_END_OF_IDLENESS,
+				0,
+				NULL);
+			break;
+		}
+		else
+		{
+			--dwIterationsLmit;
 		}
 
 		Sleep(pWatcherThreadData->dwUpdateIntervalMilliseconds);

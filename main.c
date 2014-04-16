@@ -10,7 +10,8 @@
 #include "stats.h"
 #include "create_process.h"
 
-#define UPDATE_INTERVAL 100
+#define UPDATE_INTERVAL (100)
+#define IDLENESS_LIMIT_PER_PROCESS_TIME_LIMIT_RATIO (2)
 
 int _tmain(int argc, _TCHAR *argv[])
 {
@@ -78,6 +79,7 @@ int _tmain(int argc, _TCHAR *argv[])
 	WatcherThreadData.hJob = hJob;
 	WatcherThreadData.hProcess = ProcessInformation.hProcess;
 	WatcherThreadData.dwTimeLimitMilliseconds = dwTimeLimitMilliseconds;
+	WatcherThreadData.dwIdlenessLimitMilliseconds = IDLENESS_LIMIT_PER_PROCESS_TIME_LIMIT_RATIO * dwTimeLimitMilliseconds;
 	WatcherThreadData.MemoryLimitBytes = MemoryLimitBytes;
 	WatcherThreadData.dwUpdateIntervalMilliseconds = UPDATE_INTERVAL;
 	WatcherThreadData.hCompletionPort = hCompletionPort;
@@ -116,13 +118,28 @@ int _tmain(int argc, _TCHAR *argv[])
 	GetStats(hJob, ProcessInformation.hProcess, &Stats);
 
 	_tprintf(
-		TEXT("%u %u %u %u %u %s"),
+		TEXT("%u %u %u %u %u %s\n"),
 		Verdict.verdictCode,
 		dwNumberOfBytes,
 		Verdict.exitCode,
 		Stats.dwTimeMilliseconds,
 		Stats.MemoryBytes,
 		Verdict.exitCodeMessage);
+
+	{
+		DWORD dwCwdBufLen = 500 * sizeof(TCHAR);
+		LPTSTR lpCwdBuf = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, dwCwdBufLen);
+		GetCurrentDirectory(dwCwdBufLen, lpCwdBuf);
+		_ftprintf(
+			stderr,
+			TEXT("Executor arguments are:\n%s\n%s\n%d\n%d\n%s\n"),
+			argv[0],
+			argv[1],
+			_ttoi(argv[2]),
+			_ttoi(argv[3]),
+			lpCwdBuf);
+		LocalFree(lpCwdBuf);
+	}
 
 	// WaitForSingleObject(ProcessInformation.hProcess, INFINITE);
 	CloseHandle(ProcessInformation.hProcess);

@@ -11,6 +11,10 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 	STARTUPINFO startUpInfo;
 	UINT uErrorMode;
 	HANDLE hCurrentProcess, hCurrentProcessToken, hRestrictedToken;
+	DWORD dwCwdBufLen = 500 * sizeof(TCHAR);
+	LPTSTR lpCwdBuf = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, dwCwdBufLen);
+
+	GetCurrentDirectory(dwCwdBufLen, lpCwdBuf);
 
 	hCurrentProcess = GetCurrentProcess();
 	TrueOrExit(OpenProcessToken(
@@ -50,10 +54,11 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 		FALSE,
 		CREATE_BREAKAWAY_FROM_JOB,
 		NULL,
-		NULL,
+		lpCwdBuf,
 		&startUpInfo,
 		pProcessInformation));
 
+	LocalFree(lpCwdBuf);
 	SetErrorMode(uErrorMode);
 }
 
