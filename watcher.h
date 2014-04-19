@@ -27,6 +27,7 @@ DWORD WINAPI WatcherThread(LPVOID lpParam)
 			pWatcherThreadData->hProcess,
 			pWatcherThreadData->dwTimeLimitMilliseconds))
 		{
+			_ftprintf(stderr, L"Time limit exceeded\n");
 			PostQueuedCompletionStatus(
 				pWatcherThreadData->hCompletionPort,
 				CUSTOM_JOB_OBJECT_MSG_END_OF_PROCESS_TIME,
@@ -39,6 +40,7 @@ DWORD WINAPI WatcherThread(LPVOID lpParam)
 			pWatcherThreadData->hJob,
 			pWatcherThreadData->MemoryLimitBytes))
 		{
+			_ftprintf(stderr, L"Memory limit exceeded\n");
 			PostQueuedCompletionStatus(
 				pWatcherThreadData->hCompletionPort,
 				CUSTOM_JOB_OBJECT_MSG_JOB_MEMORY_LIMIT,
@@ -49,6 +51,7 @@ DWORD WINAPI WatcherThread(LPVOID lpParam)
 
 		if(dwIterationsLmit == 0)
 		{
+			_ftprintf(stderr, L"Idleness limit exceeded\n");
 			PostQueuedCompletionStatus(
 				pWatcherThreadData->hCompletionPort,
 				CUSTOM_JOB_OBJECT_MSG_END_OF_IDLENESS,
