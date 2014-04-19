@@ -6,7 +6,7 @@
 #include <Windows.h>
 #include "debug.h"
 
-void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
+void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation, int redirectStreams)
 {
 	STARTUPINFO startUpInfo;
 	UINT uErrorMode;
@@ -33,10 +33,21 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 
 	ZeroMemory(&startUpInfo, sizeof(startUpInfo));
 	startUpInfo.cb = sizeof(startUpInfo);
-	startUpInfo.dwFlags = STARTF_USESTDHANDLES;
-	startUpInfo.hStdInput = INVALID_HANDLE_VALUE;
-	startUpInfo.hStdOutput = INVALID_HANDLE_VALUE;
-	startUpInfo.hStdError = INVALID_HANDLE_VALUE;
+	startUpInfo.dwFlags |= STARTF_USESTDHANDLES;
+	if(redirectStreams)
+	{
+		startUpInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+		startUpInfo.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+		startUpInfo.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+	}
+	else
+	{
+		startUpInfo.hStdInput = INVALID_HANDLE_VALUE;
+		startUpInfo.hStdOutput = INVALID_HANDLE_VALUE;
+		startUpInfo.hStdError = INVALID_HANDLE_VALUE;
+	}
+	startUpInfo.dwFlags |= STARTF_USESHOWWINDOW;
+	startUpInfo.wShowWindow = SW_HIDE;
 	ZeroMemory(pProcessInformation, sizeof(*pProcessInformation));
 
 	// Only way to change error mode of child process that I found
@@ -51,12 +62,26 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 		cmd,
 		NULL,
 		NULL,
-		FALSE,
-		CREATE_BREAKAWAY_FROM_JOB,
+		TRUE,
+		CREATE_NO_WINDOW | CREATE_BREAKAWAY_FROM_JOB,
 		NULL,
 		lpCwdBuf,
 		&startUpInfo,
 		pProcessInformation));
+
+	/*
+	TrueOrExit(TEXT("CreateProcess"), CreateProcess(
+		NULL,
+		cmd,
+		NULL,
+		NULL,
+		FALSE,
+		CREATE_NO_WINDOW | CREATE_BREAKAWAY_FROM_JOB,
+		NULL,
+		lpCwdBuf,
+		&startUpInfo,
+		pProcessInformation));
+		*/
 
 	LocalFree(lpCwdBuf);
 	SetErrorMode(uErrorMode);

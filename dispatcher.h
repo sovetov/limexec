@@ -13,8 +13,9 @@ typedef int VERDICT_CODE;
 #define VERDICT_TIME_LIMIT_EXCEEDED 2
 #define VERDICT_MEMORY_LIMIT_EXCEEDED 3
 #define VERDICT_IDLENESS_LIMIT_EXCEEDED 6
-#define VERDICT_UNKNOWN 7
+#define VERDICT_UNKNOWN_MESSAGE 7
 #define VERDICT_ACCESS_DENIED 8
+#define VERDICT_THAT_SHOULD_NOT_BE_REACHED 9
 
 typedef struct _VERDICT {
 	VERDICT_CODE verdictCode;
@@ -110,6 +111,9 @@ VERDICT_CODE GetVerdictCode(
 	switch(dwNumberOfBytesAsMessageIdentifier)
 	{
 	case JOB_OBJECT_MSG_EXIT_PROCESS:
+	case JOB_OBJECT_MSG_NEW_PROCESS:
+		return VERDICT_THAT_SHOULD_NOT_BE_REACHED;
+	case JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO:
 		switch(uExitCode)
 		{
 		case NTSTATUS_STATUS_SUCCESS:
@@ -117,7 +121,7 @@ VERDICT_CODE GetVerdictCode(
 		case NTSTATUS_STATUS_ACCESS_DENIED:
 			return VERDICT_ACCESS_DENIED;
 		default:
-			return VERDICT_UNKNOWN;
+			return VERDICT_UNKNOWN_MESSAGE;
 		}
 	case JOB_OBJECT_MSG_ABNORMAL_EXIT_PROCESS:
 		return VERDICT_RUNTIME_ERROR;
@@ -134,7 +138,7 @@ VERDICT_CODE GetVerdictCode(
 	case CUSTOM_JOB_OBJECT_MSG_END_OF_IDLENESS:
 		return VERDICT_IDLENESS_LIMIT_EXCEEDED;
 	default:
-		return VERDICT_UNKNOWN;
+		return VERDICT_UNKNOWN_MESSAGE;
 	}
 }
 
@@ -146,7 +150,10 @@ void DispatchQueuedCompletionStatusToVerdict(
 {
 	DWORD uExitCode;
 
-	TrueOrExit(TEXT("GetExitCodeProcess"), GetExitCodeProcess(hProcess, &uExitCode));
+	_ftprintf(stderr, TEXT("Getting exit code...\n"));
+	fflush(stderr);
+	TrueOrExit(TEXT("Executor. Dispatcher. WaitForSingleObject"), WAIT_OBJECT_0 == WaitForSingleObject(hProcess, INFINITE));
+	TrueOrExit(TEXT("Executor. Dispatcher. GetExitCodeProcess"), GetExitCodeProcess(hProcess, &uExitCode));
 	pVerdict->verdictCode = GetVerdictCode(dwNumberOfBytesAsMessageIdentifier, uExitCode);
 	pVerdict->exitCode = uExitCode;
 	pVerdict->exitCodeMessage = GetExitCodeMessage(uExitCode);

@@ -17,7 +17,7 @@ typedef struct _STATS {
 } STATS, *PSTATS;
 
 
-void GetTimeStats(HANDLE hProcess, PSTATS pStats)
+void GetTimeStatsOld(HANDLE hProcess, PSTATS pStats)
 {
 	FILETIME ftCreationTime, ftExitTime, ftKernelTime, ftUserTime;
 	ULARGE_INTEGER uliKernelTime, uliUserTime;
@@ -37,6 +37,22 @@ void GetTimeStats(HANDLE hProcess, PSTATS pStats)
 	pStats->dwTimeMilliseconds = (DWORD)((uliUserTime.QuadPart + TICKS_PER_MILLISECOND - 1) / TICKS_PER_MILLISECOND);
 }
 
+void GetTimeStats(HANDLE hJob, PSTATS pStats)
+{
+	JOBOBJECT_BASIC_ACCOUNTING_INFORMATION BasicAccountingInfo;
+
+	QueryInformationJobObject(
+		hJob,
+		JobObjectBasicAccountingInformation,
+		&BasicAccountingInfo,
+		sizeof(BasicAccountingInfo),
+		NULL);
+
+	// Have you ever seen such accurate rounding up?
+	pStats->dwTimeMilliseconds = (DWORD)((BasicAccountingInfo.TotalUserTime.QuadPart + TICKS_PER_MILLISECOND - 1) / TICKS_PER_MILLISECOND);
+}
+
+
 void GetMemoryStats(HANDLE hJob, PSTATS pStats)
 {
 	JOBOBJECT_EXTENDED_LIMIT_INFORMATION ExtendedLimitInfo;
@@ -53,7 +69,7 @@ void GetMemoryStats(HANDLE hJob, PSTATS pStats)
 
 void GetStats(HANDLE hJob, HANDLE hProcess, PSTATS pStats)
 {
-	GetTimeStats(hProcess, pStats);
+	GetTimeStats(hJob, pStats);
 	GetMemoryStats(hJob, pStats);
 }
 

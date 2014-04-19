@@ -6,12 +6,16 @@
 #include <Windows.h>
 #include "stats.h"
 
-BOOL CheckTimeLimitExceeded(HANDLE hProcess, DWORD dwTimeLimitMilliseconds)
+BOOL CheckTimeLimitExceeded(HANDLE hJob, DWORD dwTimeLimitMilliseconds)
 {
 	STATS Stats;
-	GetTimeStats(hProcess, &Stats);
+	GetTimeStats(hJob, &Stats);
 
-	// _ftprintf(stderr, L"Time consumed %d\n", Stats.dwTimeMilliseconds);
+	_ftprintf(
+		stderr,
+		TEXT("Executor. Watcher. Time consumed %u ms whereas limit is %u ms\n"),
+		Stats.dwTimeMilliseconds,
+		dwTimeLimitMilliseconds);
 
 	return Stats.dwTimeMilliseconds > dwTimeLimitMilliseconds;
 }
@@ -21,7 +25,11 @@ BOOL CheckMemoryLimitExceeded(HANDLE hJob, SIZE_T MemoryLimitBytes)
 	STATS Stats;
 	GetMemoryStats(hJob, &Stats);
 
-	// _ftprintf(stderr, L"Memory consumed %d\n", Stats.dwTimeMilliseconds);
+	_ftprintf(
+		stderr,
+		TEXT("Executor. Watcher. Memory consumed %u bytes whereas limit is %u\n"),
+		Stats.MemoryBytes,
+		MemoryLimitBytes);
 
 	return Stats.MemoryBytes > MemoryLimitBytes;
 }

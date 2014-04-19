@@ -24,15 +24,21 @@ DWORD WINAPI WatcherThread(LPVOID lpParam)
 	while(TRUE)
 	{
 		if(CheckTimeLimitExceeded(
-			pWatcherThreadData->hProcess,
+			pWatcherThreadData->hJob,
 			pWatcherThreadData->dwTimeLimitMilliseconds))
 		{
-			_ftprintf(stderr, L"Time limit exceeded\n");
+			_ftprintf(stderr, TEXT("Executor. Time limit exceeded\n"));
+			fflush(stderr);
 			PostQueuedCompletionStatus(
 				pWatcherThreadData->hCompletionPort,
 				CUSTOM_JOB_OBJECT_MSG_END_OF_PROCESS_TIME,
 				0,
 				NULL);
+			_ftprintf(
+				stderr,
+				TEXT("Executor. Watcher thread. PostQueuedCompletionStatus has just been called with message %u\n"),
+				CUSTOM_JOB_OBJECT_MSG_END_OF_PROCESS_TIME);
+			fflush(stderr);
 			break;
 		}
 
@@ -40,23 +46,35 @@ DWORD WINAPI WatcherThread(LPVOID lpParam)
 			pWatcherThreadData->hJob,
 			pWatcherThreadData->MemoryLimitBytes))
 		{
-			_ftprintf(stderr, L"Memory limit exceeded\n");
+			_ftprintf(stderr, TEXT("Executor. Watcher thread. Memory limit exceeded\n"));
+			fflush(stderr);
 			PostQueuedCompletionStatus(
 				pWatcherThreadData->hCompletionPort,
 				CUSTOM_JOB_OBJECT_MSG_JOB_MEMORY_LIMIT,
 				0,
 				NULL);
+			_ftprintf(
+				stderr,
+				TEXT("Executor. Watcher thread. PostQueuedCompletionStatus has just been called with message %u\n"),
+				CUSTOM_JOB_OBJECT_MSG_JOB_MEMORY_LIMIT);
+			fflush(stderr);
 			break;
 		}
 
 		if(dwIterationsLmit == 0)
 		{
-			_ftprintf(stderr, L"Idleness limit exceeded\n");
+			_ftprintf(stderr, TEXT("Executor. Watcher thread. Idleness limit exceeded\n"));
+			fflush(stderr);
 			PostQueuedCompletionStatus(
 				pWatcherThreadData->hCompletionPort,
 				CUSTOM_JOB_OBJECT_MSG_END_OF_IDLENESS,
 				0,
 				NULL);
+			_ftprintf(
+				stderr,
+				TEXT("Executor. Watcher thread. PostQueuedCompletionStatus has just been called with message %u\n"),
+				CUSTOM_JOB_OBJECT_MSG_END_OF_IDLENESS);
+			fflush(stderr);
 			break;
 		}
 		else
