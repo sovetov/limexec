@@ -17,11 +17,11 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 	GetCurrentDirectory(dwCwdBufLen, lpCwdBuf);
 
 	hCurrentProcess = GetCurrentProcess();
-	TrueOrExit(OpenProcessToken(
+	TrueOrExit(TEXT("OpenProcessToken"), OpenProcessToken(
 		hCurrentProcess,
 		TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY | TOKEN_ADJUST_PRIVILEGES, &hCurrentProcessToken));
 
-	TrueOrExit(CreateRestrictedToken(
+	TrueOrExit(TEXT("CreateRestrictedToken"), CreateRestrictedToken(
 		hCurrentProcessToken,
 		DISABLE_MAX_PRIVILEGE,
 		0, NULL,
@@ -29,7 +29,7 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 		0, NULL,
 		&hRestrictedToken));
 
-	TrueOrExit(AdjustTokenPrivileges(hRestrictedToken, TRUE, NULL, 0, NULL, 0));
+	TrueOrExit(TEXT("AdjustTokenPrivileges"), AdjustTokenPrivileges(hRestrictedToken, TRUE, NULL, 0, NULL, 0));
 
 	ZeroMemory(&startUpInfo, sizeof(startUpInfo));
 	startUpInfo.cb = sizeof(startUpInfo);
@@ -45,7 +45,7 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation)
 	uErrorMode = SetErrorMode(
 		SetErrorMode(0) | SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
 
-	TrueOrExit(CreateProcessAsUser(
+	TrueOrExit(TEXT("CreateProcessAsUser"), CreateProcessAsUser(
 		hRestrictedToken,
 		NULL,
 		cmd,

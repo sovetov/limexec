@@ -18,7 +18,7 @@ void MyAssociateCompletionPort(HANDLE hJob, HANDLE hCompletionPort)
 		NULL);
 	associateCompletionPort.CompletionKey = NULL;
 	associateCompletionPort.CompletionPort = hCompletionPort;
-	TrueOrExit(SetInformationJobObject(
+	TrueOrExit(TEXT("SetInformationJobObject"), SetInformationJobObject(
 		hJob,
 		JobObjectAssociateCompletionPortInformation,
 		&associateCompletionPort,
@@ -39,7 +39,7 @@ void MySetBreakawayLimit(HANDLE hJob)
 		sizeof(basicLimitInformationForTimeLimit),
 		NULL);
 	basicLimitInformationForTimeLimit.LimitFlags |= JOB_OBJECT_LIMIT_BREAKAWAY_OK;
-	TrueOrExit(SetInformationJobObject(
+	TrueOrExit(TEXT("SetInformationJobObject"), SetInformationJobObject(
 		hJob,
 		JobObjectBasicLimitInformation,
 		&basicLimitInformationForTimeLimit,
@@ -60,7 +60,7 @@ void MySetTimeLimit(HANDLE hJob, LONGLONG TimeLimitMs)
 		sizeof(basicLimitInformationForTimeLimit), NULL);
 	basicLimitInformationForTimeLimit.LimitFlags |= JOB_OBJECT_LIMIT_JOB_TIME;
 	basicLimitInformationForTimeLimit.PerJobUserTimeLimit.QuadPart = TimeLimitMs * 10000;
-	TrueOrExit(SetInformationJobObject(
+	TrueOrExit(TEXT("SetInformationJobObject"), SetInformationJobObject(
 		hJob,
 		JobObjectBasicLimitInformation,
 		&basicLimitInformationForTimeLimit,
@@ -82,7 +82,7 @@ void MySetMemoryLimit(HANDLE hJob, SIZE_T JobLimitBytes)
 		NULL);
 	extendedLimitInformationForMemoryLimit.BasicLimitInformation.LimitFlags |= JOB_OBJECT_LIMIT_JOB_MEMORY;
 	extendedLimitInformationForMemoryLimit.JobMemoryLimit = JobLimitBytes;
-	TrueOrExit(SetInformationJobObject(
+	TrueOrExit(TEXT("SetInformationJobObject"), SetInformationJobObject(
 		hJob,
 		JobObjectExtendedLimitInformation,
 		&extendedLimitInformationForMemoryLimit,
@@ -102,7 +102,7 @@ void MySetEndOfJobTimeInformation(HANDLE hJob)
 		&endOfJobTimeInformation,
 		sizeof(endOfJobTimeInformation), NULL);
 	endOfJobTimeInformation.EndOfJobTimeAction = JOB_OBJECT_POST_AT_END_OF_JOB;
-	TrueOrExit(SetInformationJobObject(
+	TrueOrExit(TEXT("SetInformationJobObject"), SetInformationJobObject(
 		hJob,
 		JobObjectEndOfJobTimeInformation,
 		&endOfJobTimeInformation,
@@ -122,7 +122,7 @@ void MySetBasicUIRestrictions(HANDLE hJob)
 		&BasicUIRestrictions,
 		sizeof(BasicUIRestrictions), NULL);
 	BasicUIRestrictions.UIRestrictionsClass = JOB_OBJECT_UILIMIT_ALL;
-	TrueOrExit(SetInformationJobObject(
+	TrueOrExit(TEXT("SetInformationJobObject"), SetInformationJobObject(
 		hJob,
 		JobObjectBasicUIRestrictions,
 		&BasicUIRestrictions,

@@ -32,15 +32,32 @@ int _tmain(int argc, _TCHAR *argv[])
 
 	if(argc != 4)
 	{
-		_tprintf(TEXT("Usage \"%s\" <command_line> <time_limit_ms> <memory_limit_bytes>"), argv[0]);
+		_ftprintf(stderr, TEXT("Usage \"%s\" <command_line> <time_limit_ms> <memory_limit_bytes>"), argv[0]);
 		ExitProcess(1);
+	}
+
+	{
+		DWORD dwCwdBufLen = 500 * sizeof(TCHAR);
+		LPTSTR lpCwdBuf = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, dwCwdBufLen);
+
+		GetCurrentDirectory(dwCwdBufLen, lpCwdBuf);
+		_ftprintf(
+			stderr,
+			TEXT("Executor arguments are:\n%s\n%s\n%d\n%d\n\nExecutor working dir is:\n%s\n\n"),
+			argv[0],
+			argv[1],
+			_ttoi(argv[2]),
+			_ttoi(argv[3]),
+			lpCwdBuf);
+		LocalFree(lpCwdBuf);
+		fflush(stderr);
 	}
 
 	CommandLine = argv[1];
 	dwTimeLimitMilliseconds = _ttoi(argv[2]);
 	MemoryLimitBytes = _ttoi(argv[3]);
 
-	hJob = HandleOrExit(CreateJobObject(NULL, NULL));
+	hJob = HandleOrExit(TEXT("CreateJobObject"), CreateJobObject(NULL, NULL));
 	// MySetBreakawayLimit(hJob);
 	MySetBasicUIRestrictions(hJob);
 
@@ -57,7 +74,7 @@ int _tmain(int argc, _TCHAR *argv[])
 	MySetEndOfJobTimeInformation(hJob);
 
 	MyCreateProcess(CommandLine, &ProcessInformation);
-	TrueOrExit(AssignProcessToJobObject(
+	TrueOrExit(TEXT("AssignProcessToJobObject"), AssignProcessToJobObject(
 		hJob,
 		ProcessInformation.hProcess));
 
@@ -83,7 +100,7 @@ int _tmain(int argc, _TCHAR *argv[])
 	WatcherThreadData.MemoryLimitBytes = MemoryLimitBytes;
 	WatcherThreadData.dwUpdateIntervalMilliseconds = UPDATE_INTERVAL;
 	WatcherThreadData.hCompletionPort = hCompletionPort;
-	hWatcherThread = HandleOrExit(CreateThread(
+	hWatcherThread = HandleOrExit(TEXT("CreateThread"), CreateThread(
 		NULL,
 		0,
 		WatcherThread,
@@ -125,21 +142,6 @@ int _tmain(int argc, _TCHAR *argv[])
 		Stats.dwTimeMilliseconds,
 		Stats.MemoryBytes,
 		Verdict.exitCodeMessage);
-
-	{
-		DWORD dwCwdBufLen = 500 * sizeof(TCHAR);
-		LPTSTR lpCwdBuf = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, dwCwdBufLen);
-		GetCurrentDirectory(dwCwdBufLen, lpCwdBuf);
-		_ftprintf(
-			stderr,
-			TEXT("Executor arguments are:\n%s\n%s\n%d\n%d\n%s\n"),
-			argv[0],
-			argv[1],
-			_ttoi(argv[2]),
-			_ttoi(argv[3]),
-			lpCwdBuf);
-		LocalFree(lpCwdBuf);
-	}
 
 	// WaitForSingleObject(ProcessInformation.hProcess, INFINITE);
 	CloseHandle(ProcessInformation.hProcess);

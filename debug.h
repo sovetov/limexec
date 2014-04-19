@@ -66,20 +66,18 @@ void ErrorHandler(LPCTSTR lpszFunction)
 	LocalFree(lpDisplayBuf);
 }
 
-void TrueOrExit(BOOL call)
+void TrueOrExit(LPCTSTR message, BOOL call)
 {
-	_TCHAR *message = TEXT("Error: %d");
-
 	if(!(call))
 	{
-		ErrorHandler(TEXT("Executor"));
+		ErrorHandler(message);
 		ExitProcess(1);
 	}
 }
 
-HANDLE HandleOrExit(HANDLE call)
+HANDLE HandleOrExit(LPCTSTR message, HANDLE call)
 {
-	TrueOrExit(call != INVALID_HANDLE_VALUE);
+	TrueOrExit(message, call != INVALID_HANDLE_VALUE);
 	return call;
 }
 
