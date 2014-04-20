@@ -161,13 +161,14 @@ int _tmain(int argc, _TCHAR *argv[])
 		GetStats(hJob, ProcessInformation.hProcess, &Stats);
 
 		_tprintf(
-			TEXT("%u %u %u %u %u %s\n"),
+			TEXT("%u %u %u %u %u %s %s\n"),
 			Verdict.verdictCode,
 			dwPossiblyAbnormalNumberOfBytesAsMessageIdentifier,
 			Verdict.exitCode,
 			Stats.dwTimeMilliseconds,
 			Stats.MemoryBytes,
-			Verdict.exitCodeMessage);
+			Verdict.exitCodeMessage,
+			Verdict.messageMessage);
 		fflush(stderr);
 	}
 
