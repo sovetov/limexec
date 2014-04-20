@@ -9,7 +9,6 @@
 void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation, int redirectStreams)
 {
 	STARTUPINFO startUpInfo;
-	UINT uErrorMode;
 	HANDLE hCurrentProcess, hCurrentProcessToken, hRestrictedToken;
 	DWORD dwCwdBufLen = 500 * sizeof(TCHAR);
 	LPTSTR lpCwdBuf = (LPTSTR)LocalAlloc(LMEM_ZEROINIT, dwCwdBufLen);
@@ -36,12 +35,14 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation, int 
 	startUpInfo.dwFlags |= STARTF_USESTDHANDLES;
 	if(redirectStreams)
 	{
+		_ftprintf(stderr, TEXT("Executor. Creating process. Streams are redirected\n"));
 		startUpInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
 		startUpInfo.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 		startUpInfo.hStdError = GetStdHandle(STD_ERROR_HANDLE);
 	}
 	else
 	{
+		_ftprintf(stderr, TEXT("Executor. Creating process. Streams are suppressed\n"));
 		startUpInfo.hStdInput = INVALID_HANDLE_VALUE;
 		startUpInfo.hStdOutput = INVALID_HANDLE_VALUE;
 		startUpInfo.hStdError = INVALID_HANDLE_VALUE;
@@ -49,12 +50,6 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation, int 
 	startUpInfo.dwFlags |= STARTF_USESHOWWINDOW;
 	startUpInfo.wShowWindow = SW_HIDE;
 	ZeroMemory(pProcessInformation, sizeof(*pProcessInformation));
-
-	// Only way to change error mode of child process that I found
-	// is to change parent's one, let child inherit it
-	// and restore parent's error mode back.
-	uErrorMode = SetErrorMode(
-		SetErrorMode(0) | SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
 
 	TrueOrExit(TEXT("CreateProcessAsUser"), CreateProcessAsUser(
 		hRestrictedToken,
@@ -69,22 +64,7 @@ void MyCreateProcess(_TCHAR *cmd, PPROCESS_INFORMATION pProcessInformation, int 
 		&startUpInfo,
 		pProcessInformation));
 
-	/*
-	TrueOrExit(TEXT("CreateProcess"), CreateProcess(
-		NULL,
-		cmd,
-		NULL,
-		NULL,
-		FALSE,
-		CREATE_NO_WINDOW | CREATE_BREAKAWAY_FROM_JOB,
-		NULL,
-		lpCwdBuf,
-		&startUpInfo,
-		pProcessInformation));
-		*/
-
 	LocalFree(lpCwdBuf);
-	SetErrorMode(uErrorMode);
 }
 
 #endif // CREATE_PROCESS_H

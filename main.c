@@ -28,6 +28,8 @@ int _tmain(int argc, _TCHAR *argv[])
 	VERDICT Verdict;
 	STATS Stats;
 
+	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
+
 	if(argc != 5)
 	{
 		_ftprintf(stderr, TEXT("Executor usage \"%s\" <command_line> <time_limit_ms> <memory_limit_bytes> <redirect_streams>"), argv[0]);
