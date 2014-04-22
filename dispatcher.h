@@ -1,11 +1,10 @@
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
 
-#include "common_compile_defines.h"
+#include "defines.h"
 
 #include <Windows.h>
 #include "debug.h"
-#include "custom_job_object_msgs.h"
 
 typedef int VERDICT_CODE;
 #define VERDICT_SUCCESS 0
@@ -16,17 +15,13 @@ typedef int VERDICT_CODE;
 #define VERDICT_UNKNOWN_MESSAGE 7
 #define VERDICT_ACCESS_DENIED 8
 #define VERDICT_THAT_SHOULD_NOT_BE_REACHED 9
-#define VERDICT_UNKNOWN_EXIT_CODE 10
+#define VERDICT_NONZERO_EXIT_CODE 10
 
 typedef struct _VERDICT {
 	VERDICT_CODE verdictCode;
 	LPCTSTR exitCodeMessage, messageMessage;
 	DWORD exitCode;
 } VERDICT, *PVERDICT;
-
-#define NTSTATUS_STATUS_SUCCESS 0
-#define NTSTATUS_STATUS_ACCESS_DENIED 0xC0000022
-#define CUSTOM_STATUS_TERMINATED_BY_CHECKER 0xFF000001
 
 // According to http://msdn.microsoft.com/en-us/library/windows/desktop/ms684141(v=vs.85).aspx
 // Due to some difficulties with getting error messages via FormatMessage function
@@ -91,8 +86,6 @@ LPCTSTR GetExitCodeMessage(DWORD uExitCode)
 		return TEXT("STATUS_SINGLE_STEP");
 	case STATUS_STACK_OVERFLOW:
 		return TEXT("STATUS_STACK_OVERFLOW");
-	case CUSTOM_STATUS_TERMINATED_BY_CHECKER:
-		return TEXT("CUSTOM_STATUS_TERMINATED_BY_CHECKER");
 	case STATUS_INVALID_CRUNTIME_PARAMETER:
 		return TEXT("STATUS_INVALID_CRUNTIME_PARAMETER");
 
@@ -100,6 +93,11 @@ LPCTSTR GetExitCodeMessage(DWORD uExitCode)
 		return TEXT("CUSTOM_STATUS_SUCCESS");
 	case NTSTATUS_STATUS_ACCESS_DENIED:
 		return TEXT("STATUS_ACCESS_DENIED");
+
+	case CUSTOM_EXIT_CODE_TERMINATED_BY_CHECKER:
+		return TEXT("CUSTOM_STATUS_TERMINATED_BY_CHECKER");
+	case CUSTOM_EXIT_CODE_WRONG_SCANF_FORMAT:
+		return TEXT("CUSTOM_EXIT_CODE_WRONG_SCANF_FORMAT");
 
 	default:
 		return TEXT("UNKNOWN_STATUS");
@@ -163,7 +161,7 @@ VERDICT_CODE GetVerdictCode(
 		case NTSTATUS_STATUS_ACCESS_DENIED:
 			return VERDICT_ACCESS_DENIED;
 		default:
-			return VERDICT_UNKNOWN_EXIT_CODE;
+			return VERDICT_NONZERO_EXIT_CODE;
 		}
 	case JOB_OBJECT_MSG_ABNORMAL_EXIT_PROCESS:
 		return VERDICT_RUNTIME_ERROR;

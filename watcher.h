@@ -1,11 +1,10 @@
 #ifndef WATCHER_H
 #define WATCHER_H
 
-#include "common_compile_defines.h"
+#include "defines.h"
 
 #include <Windows.h>
 #include "checks.h"
-#include "custom_job_object_msgs.h"
 
 typedef struct {
 	HANDLE hJob;

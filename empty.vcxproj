@@ -78,9 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="checks.h" />
-    <ClInclude Include="common_compile_defines.h" />
-    <ClInclude Include="create_process.h" />
-    <ClInclude Include="custom_job_object_msgs.h" />
+    <ClInclude Include="defines.h" />
+    <ClInclude Include="process.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="stats.h" />

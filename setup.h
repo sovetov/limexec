@@ -1,7 +1,7 @@
 #ifndef SETUP_H
 #define SETUP_H
 
-#include "common_compile_defines.h"
+#include "defines.h"
 
 #include <Windows.h>
 

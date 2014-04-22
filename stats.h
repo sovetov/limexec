@@ -1,7 +1,7 @@
 #ifndef STATS_H
 #define STATS_H
 
-#include "common_compile_defines.h"
+#include "defines.h"
 
 #include <stdio.h>
 #include <tchar.h>

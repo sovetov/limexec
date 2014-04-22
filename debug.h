@@ -1,7 +1,7 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include "common_compile_defines.h"
+#include "defines.h"
 
 #include <stdio.h>
 #include <tchar.h>

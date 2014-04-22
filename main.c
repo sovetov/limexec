@@ -1,4 +1,4 @@
-#include "common_compile_defines.h"
+#include "defines.h"
 
 #include <tchar.h>
 #include <assert.h>
@@ -8,7 +8,7 @@
 #include "setup.h"
 #include "dispatcher.h"
 #include "stats.h"
-#include "create_process.h"
+#include "process.h"
 
 #define UPDATE_INTERVAL (100)
 #define IDLENESS_LIMIT_PER_PROCESS_TIME_LIMIT_RATIO (2)
@@ -152,7 +152,7 @@ int _tmain(int argc, _TCHAR *argv[])
 		fflush(stderr);
 		TrueOrExit(TEXT("Executor. TerminateJobObject"), TerminateJobObject(
 			hJob,
-			CUSTOM_STATUS_TERMINATED_BY_CHECKER));
+			CUSTOM_EXIT_CODE_TERMINATED_BY_CHECKER));
 
 		DispatchQueuedCompletionStatusToVerdict(
 			dwPossiblyAbnormalNumberOfBytesAsMessageIdentifier,
