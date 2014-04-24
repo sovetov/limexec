@@ -190,14 +190,20 @@ void DispatchQueuedCompletionStatusToVerdict(
 {
 	DWORD uExitCode;
 
-	_ftprintf(stderr, TEXT("Getting exit code...\n"));
+	_ftprintf(stderr, TEXT("Executor. Dispatcher. WaitForSingleObject...\n"));
 	fflush(stderr);
-	TrueOrExit(TEXT("Executor. Dispatcher. WaitForSingleObject"), WAIT_OBJECT_0 == WaitForSingleObject(hProcess, INFINITE));
-	TrueOrExit(TEXT("Executor. Dispatcher. GetExitCodeProcess"), GetExitCodeProcess(hProcess, &uExitCode));
+	TrueOrExit(TEXT("WaitForSingleObject"), WAIT_OBJECT_0 == WaitForSingleObject(hProcess, INFINITE));
+	_ftprintf(stderr, TEXT("Executor. Dispatcher. WaitForSingleObject returned. GetExitCodeProcess...\n"));
+	fflush(stderr);
+	TrueOrExit(TEXT("GetExitCodeProcess"), GetExitCodeProcess(hProcess, &uExitCode));
+	_ftprintf(stderr, TEXT("Executor. Dispatcher. Getting exit code returned\n"));
+	fflush(stderr);
 	pVerdict->verdictCode = GetVerdictCode(dwNumberOfBytesAsMessageIdentifier, uExitCode);
 	pVerdict->exitCode = uExitCode;
 	pVerdict->exitCodeMessage = GetExitCodeMessage(uExitCode);
 	pVerdict->messageMessage = GetMessageMessage(dwNumberOfBytesAsMessageIdentifier);
+	_ftprintf(stderr, TEXT("Executor. Dispatcher. Done\n"));
+	fflush(stderr);
 }
 
 #endif // DISPATCHER_H
